@@ -14008,15 +14008,24 @@ public final class Settings {
          */
         public static final String IDENTITY_CHECK_NOTIFICATION_VIEW_DETAILS_CLICKED =
                 "identity_check_notification_view_details_clicked";
+
        /** @hide */
         public static final String SPOOF_GAMEPROPS_CONFIG = "spoof_gameprops_config";
+
         /** @hide */
         public static final String SPOOF_PIF_PHOTOS = "spoof_pif_photos";
+
         /**
          * Control which apps to hide from other user apps.
          * @hide
          */
         public static final String HIDE_APPLIST = "hide_applist";
+
+     /**
+         * Control whether to hide screen capture status from apps.
+         * @hide
+         */
+        public static final String HIDE_SCREEN_CAPTURE_STATUS = "hide_screen_capture_status";
     }
 
     /**
