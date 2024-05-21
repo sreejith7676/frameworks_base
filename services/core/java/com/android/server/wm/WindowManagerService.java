@@ -10815,6 +10815,7 @@ public class WindowManagerService extends IWindowManager.Stub
         final long origId = Binder.clearCallingIdentity();
         try {
             synchronized (mGlobalLock) {
+            if (shouldHideScreenCapture()) return new ArrayList<>();
                 DisplayContent dc = mRoot.getDisplayContentOrCreate(displayId);
                 if (dc == null) {
                     return false;
@@ -10854,6 +10855,9 @@ public class WindowManagerService extends IWindowManager.Stub
     @EnforcePermission(android.Manifest.permission.DETECT_SCREEN_RECORDING)
     @Override
     public boolean registerScreenRecordingCallback(IScreenRecordingCallback callback) {
+    if (shouldHideScreenCapture()) {
+            return false;
+        }
         registerScreenRecordingCallback_enforcePermission();
         return mScreenRecordingCallbackController.register(callback);
     }
@@ -10866,6 +10870,9 @@ public class WindowManagerService extends IWindowManager.Stub
     }
 
     void onProcessActivityVisibilityChanged(int uid, boolean visible) {
+    if (shouldHideScreenCapture()) {
+            return;
+        }
         mScreenRecordingCallbackController.onProcessActivityVisibilityChanged(uid, visible);
     }
 
@@ -10993,5 +11000,9 @@ public class WindowManagerService extends IWindowManager.Stub
                 mAtmService.updateFontScaleIfNeeded(userId);
             }
         }
+    }
+    private boolean shouldHideScreenCapture() {
+        return Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.HIDE_SCREEN_CAPTURE_STATUS, 0) != 0;
     }
 }
