@@ -445,7 +445,7 @@ struct DrawImage final : Op {
             const SkRect src = SkRect::MakeWH(image->width(), image->height());
             traceBitmapScaling(c, image, src, SkRect::MakeXYWH(x, y, src.width(), src.height()));
         }
-        if (gainmap) {
+        if (gainmap && Properties::enableUhdrGore) {
             SkRect src = SkRect::MakeWH(image->width(), image->height());
             SkRect dst = SkRect::MakeXYWH(x, y, src.width(), src.height());
             DrawGainmapBitmap(c, image, src, dst, sampling, &paint,
@@ -503,7 +503,7 @@ struct DrawImageRect final : Op {
             c->drawRect(destination, whitePaint);
             destination.inset(BARCODE_QUIET_ZONE_PX, BARCODE_QUIET_ZONE_PX);
         }
-        if (gainmap) {
+        if (gainmap && Properties::enableUhdrGore) {
             DrawGainmapBitmap(c, image, src, destination, sampling, &paint, constraint, gainmap,
                               gainmapInfo);
         } else {
