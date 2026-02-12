@@ -4277,6 +4277,12 @@ public final class Settings {
 
         private static final float DEFAULT_FONT_SCALE = 1.0f;
         private static final int DEFAULT_FONT_WEIGHT = 0;
+        
+        /**
+         * Customizable notification shade blur radius (in pixels).
+         * @hide
+         */
+        public static final String SHADE_BLUR_RADIUS = "shade_blur_radius";
 
         /**
          * The content:// style URL for this table

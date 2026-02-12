@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,8 @@ import android.app.trust.TrustManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.PowerManager;
+import android.os.UserHandle;
+import android.provider.Settings;
 
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.internal.logging.UiEventLogger;
@@ -253,12 +255,24 @@ public interface KeyguardModule {
     /** */
     @Provides
     @SysUISingleton
-    static BlurConfig provideBlurConfig(@Main Resources resources) {
-        int maxBlurRadius =
-                Flags.notificationShadeBlur() || Flags.bouncerUiRevamp()
-                        || Flags.glanceableHubBlurredBackground()
-                        ? resources.getDimensionPixelSize(R.dimen.max_shade_window_blur_radius)
-                        : resources.getDimensionPixelSize(R.dimen.max_window_blur_radius);
+    static BlurConfig provideBlurConfig(@Main Resources resources, @Application Context context) {
+        int userBlurRadius = Settings.System.getIntForUser(
+                context.getContentResolver(),
+                Settings.System.SHADE_BLUR_RADIUS,
+                0,
+                UserHandle.USER_CURRENT
+        );
+
+        int maxBlurRadius;
+
+        if (Flags.notificationShadeBlur() || Flags.bouncerUiRevamp()
+                || Flags.glanceableHubBlurredBackground()) {
+            // Use user setting
+            maxBlurRadius = userBlurRadius;
+        } else {
+            // Fallback for older configurations
+            maxBlurRadius = resources.getDimensionPixelSize(R.dimen.max_window_blur_radius);
+        }
 
         return new BlurConfig(0.0f, maxBlurRadius);
     }
