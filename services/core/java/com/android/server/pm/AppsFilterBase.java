@@ -328,7 +328,7 @@ public abstract class AppsFilterBase implements AppsFilterSnapshot {
      * {@link AppsFilterSnapshot#shouldFilterApplication(PackageDataSnapshot, int, Object,
      * PackageStateInternal, int)}
      */
-    private static final java.util.Set<String> ROOT_PACKAGES = java.util.Set.of(
+   private static final java.util.Set<String> ROOT_PACKAGES = java.util.Set.of(
             "com.topjohnwu.magisk",
             "eu.chainfire.supersu",
             "com.koushikdutta.superuser",
@@ -362,23 +362,16 @@ public abstract class AppsFilterBase implements AppsFilterSnapshot {
             "com.ramdroid.appquarantine",
             "com.ramdroid.appquarantinepro",
             "com.zachspong.temprootremovejb",
-            "org.lineageos.lineageparts",
-            "org.lineageos.settings",
-            "org.lineageos.setupwizard",
-            "org.lineageos.updater",
-            "com.clover.updater",
-            "co.aospa.sense",
-            "co.aospa.sense.settings.overlay",
-            "com.clover.updater.gms",
-            "com.android.displayfeatures",
-            "com.clover.overlay.customization.blacktheme",
-            "com.clover.providers.settings.overlay.gms"
+            "com.android.displayfeatures"
     );
 
     private static boolean isRomPackage(String pkg) {
+        if (pkg == null) return false;
         return pkg.startsWith("org.lineageos.")
                 || pkg.startsWith("org.omnirom.")
-                || pkg.startsWith("org.protonaosp.");
+                || pkg.startsWith("org.protonaosp.")
+                || pkg.startsWith("com.clover.")
+                || pkg.startsWith("co.aospa.");
     }
 
     private static boolean isCallerSystemApp(Object callingSetting) {
@@ -397,11 +390,17 @@ public abstract class AppsFilterBase implements AppsFilterSnapshot {
         try {
             int callingAppId = UserHandle.getAppId(callingUid);
             String targetPkg = targetPkgSetting.getPackageName();
+
+            // Custom ROM / Root Package Protection Hook
             if (callingAppId >= Process.FIRST_APPLICATION_UID
                     && !isCallerSystemApp(callingSetting)
-                    && (ROOT_PACKAGES.contains(targetPkg) || isRomPackage(targetPkg))) {
+                    && (isRomPackage(targetPkg) || ROOT_PACKAGES.contains(targetPkg))) {
+                if (DEBUG_LOGGING || mFeatureConfig.isLoggingEnabled(callingAppId)) {
+                    log(callingSetting, targetPkgSetting, "BLOCKED (ROM HIDE)");
+                }
                 return true;
             }
+
             if (callingAppId < Process.FIRST_APPLICATION_UID
                     || targetPkgSetting.getAppId() < Process.FIRST_APPLICATION_UID
                     || callingAppId == targetPkgSetting.getAppId()) {
@@ -409,12 +408,11 @@ public abstract class AppsFilterBase implements AppsFilterSnapshot {
             } else if (Process.isSdkSandboxUid(callingAppId)) {
                 final int targetAppId = targetPkgSetting.getAppId();
                 final int targetUid = UserHandle.getUid(userId, targetAppId);
-                // we only allow sdk sandbox processes access to forcequeryable packages or
-                // if the target app is the sandbox's client app
                 return !isForceQueryable(targetPkgSetting.getAppId())
                         && !isImplicitlyQueryable(callingUid, targetUid)
                         && !isQueryableBySdkSandbox(callingUid, targetUid);
             }
+            
             // use cache
             if (mCacheReady && mCacheEnabled) {
                 if (!shouldFilterApplicationUsingCache(callingUid,
