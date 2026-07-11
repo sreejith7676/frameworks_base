@@ -202,8 +202,7 @@ public final class PlayIntegritySpoofService {
         try {
             content = am.getSpoofPifConfig();
             String spoofPhotos = am.getSpoofPifSpoofPhotos();
-            mSpoofPhotos = spoofPhotos == null || "1".equals(spoofPhotos)
-                            || "true".equalsIgnoreCase(spoofPhotos);
+            mSpoofPhotos = "1".equals(spoofPhotos) || "true".equalsIgnoreCase(spoofPhotos);
         } catch (Throwable e) {
             Log.e(TAG, "Failed to fetch PIF config from system_server", e);
             return;
