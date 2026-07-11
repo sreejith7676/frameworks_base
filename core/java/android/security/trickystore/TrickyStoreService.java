@@ -17,7 +17,6 @@
 package android.security.trickystore;
 
 import android.app.ActivityManager;
-import android.app.IActivityManager;
 import android.os.RemoteException;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -93,25 +92,20 @@ public class TrickyStoreService {
     }
 
     private String fetchFromAms(Fetcher fetcher) {
-        IActivityManager am = ActivityManager.getService();
-        if (am == null) {
-            Log.w(TAG, "ActivityManager not ready, skipping trickystore fetch");
-            return null;
-        }
         try {
-            return fetcher.fetch(am);
-        } catch (Throwable e) {
+            return fetcher.fetch();
+        } catch (RemoteException e) {
             Log.e(TAG, "Failed to fetch trickystore config from system_server", e);
             return null;
         }
     }
 
     private interface Fetcher {
-        String fetch(IActivityManager am) throws RemoteException;
+        String fetch() throws RemoteException;
     }
 
     public void refreshTargets() {
-        String content = fetchFromAms(am -> am.getSpoofTrickyStoreTarget());
+        String content = fetchFromAms(() -> ActivityManager.getService().getSpoofTrickyStoreTarget());
         mHackPackages.clear();
         mGeneratePackages.clear();
         mPackageModes.clear();
@@ -189,7 +183,7 @@ public class TrickyStoreService {
     }
 
     public void refreshKeyBox() {
-        String raw = fetchFromAms(am -> am.getSpoofTrickyStoreKeyBox());
+        String raw = fetchFromAms(() -> ActivityManager.getService().getSpoofTrickyStoreKeyBox());
         if (raw == null || raw.isEmpty()) {
             mKeyBoxManager.clear();
             mLastKeyboxFingerprint = null;
@@ -236,7 +230,7 @@ public class TrickyStoreService {
     }
 
     public void refreshPatchLevel() {
-        String content = fetchFromAms(am -> am.getSpoofTrickyStorePatch());
+        String content = fetchFromAms(() -> ActivityManager.getService().getSpoofTrickyStorePatch());
         if (content == null || content.isEmpty()) {
             mCustomPatchLevel = null;
             return;
