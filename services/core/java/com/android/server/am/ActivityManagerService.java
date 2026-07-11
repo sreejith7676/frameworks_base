@@ -503,7 +503,7 @@ import dalvik.annotation.optimization.NeverCompile;
 import dalvik.system.VMRuntime;
 
 import libcore.util.EmptyArray;
-
+import com.android.server.AxExtServiceFactory;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
@@ -1283,6 +1283,7 @@ public class ActivityManagerService extends IActivityManager.Stub
                     " reason=" + mReason);
         }
     }
+
 
     /**
      * The temp-allowlist that is allowed to start FGS from background.
@@ -9250,7 +9251,7 @@ public class ActivityManagerService extends IActivityManager.Stub
             mComponentAliasResolver.onSystemReady(mConstants.mEnableComponentAlias,
                     mConstants.mComponentAliasOverrides);
             t.traceEnd(); // componentAlias
-
+            AxExtServiceFactory.systemReady();
             t.traceEnd(); // PhaseActivityManagerReady
         }
     }
@@ -19976,6 +19977,16 @@ public class ActivityManagerService extends IActivityManager.Stub
                 }
             }
         });
+    }
+
+    @Override
+    public String getSpoofGamePropsConfig() {
+        return com.android.server.AxExtServiceFactory.getSpoofManager().getGamePropsConfig();
+    }
+
+    @Override
+    public String getSpoofPifSpoofPhotos() {
+        return com.android.server.AxExtServiceFactory.getSpoofManager().getPifSpoofPhotos();
     }
 
     @Override

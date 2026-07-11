@@ -14008,6 +14008,10 @@ public final class Settings {
          */
         public static final String IDENTITY_CHECK_NOTIFICATION_VIEW_DETAILS_CLICKED =
                 "identity_check_notification_view_details_clicked";
+       /** @hide */
+        public static final String SPOOF_GAMEPROPS_CONFIG = "spoof_gameprops_config";
+        /** @hide */
+        public static final String SPOOF_PIF_PHOTOS = "spoof_pif_photos";
     }
 
     /**
