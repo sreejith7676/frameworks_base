@@ -200,15 +200,9 @@ public class TrickyStoreService {
         }
         try {
             mKeyBoxManager.parseKeybox(xml);
-            if (mKeyBoxManager.hasKeyboxes()) {
-                mLastKeyboxFingerprint = fingerprint;
-                Log.i(TAG, "Keybox updated successfully");
-            } else {
-                mLastKeyboxFingerprint = null;
-                Log.e(TAG, "Keybox parse produced no usable entries");
-            }
+            mLastKeyboxFingerprint = fingerprint;
+            Log.i(TAG, "Keybox updated successfully");
         } catch (Exception e) {
-            mLastKeyboxFingerprint = null;
             Log.e(TAG, "Failed to update keybox", e);
         }
     }
