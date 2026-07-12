@@ -14012,6 +14012,11 @@ public final class Settings {
         public static final String SPOOF_GAMEPROPS_CONFIG = "spoof_gameprops_config";
         /** @hide */
         public static final String SPOOF_PIF_PHOTOS = "spoof_pif_photos";
+        /**
+         * Control which apps to hide from other user apps.
+         * @hide
+         */
+        public static final String HIDE_APPLIST = "hide_applist";
     }
 
     /**

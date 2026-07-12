@@ -2874,6 +2874,10 @@ public final class SystemServer implements Dumpable {
             mSystemServiceManager.startService(MediaMetricsManagerService.class);
             t.traceEnd();
 
+           t.traceBegin("StartHideAppListService");
+           mSystemServiceManager.startService(HideAppListService.class);
+           t.traceEnd();
+
             // CloverDeviceConfigService
             t.traceBegin("StartCloverDeviceConfigService");
             mSystemServiceManager.startService(CloverDeviceConfigService.class);
