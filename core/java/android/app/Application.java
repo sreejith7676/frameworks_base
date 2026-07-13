@@ -361,6 +361,11 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
             android.security.gameprops.GamePropsSpoofService.spoof(packageName);
             android.security.pif.PhotosSpoofService.spoof(packageName);
         }
+
+       String processName = getProcessName();
+        if (processName != null) {
+            android.security.pif.PlayIntegritySpoofService.spoof(processName);
+        }
     }
 
     @android.ravenwood.annotation.RavenwoodIgnore(blockedBy = LoadedApk.class)
