@@ -10763,6 +10763,7 @@ public class WindowManagerService extends IWindowManager.Stub
             throw new SecurityException("Requires STATUS_BAR_SERVICE permission");
         }
         synchronized (mGlobalLock) {
+            if (shouldHideScreenCapture()) return new ArrayList<>();
             final DisplayContent displayContent = mRoot.getDisplayContent(displayId);
             if (displayContent == null) {
                 return new ArrayList<>();
@@ -10825,7 +10826,6 @@ public class WindowManagerService extends IWindowManager.Stub
         final long origId = Binder.clearCallingIdentity();
         try {
             synchronized (mGlobalLock) {
-            if (shouldHideScreenCapture()) return new ArrayList<>();
                 DisplayContent dc = mRoot.getDisplayContentOrCreate(displayId);
                 if (dc == null) {
                     return false;
